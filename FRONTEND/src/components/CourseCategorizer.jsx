@@ -4,6 +4,11 @@ import { FaStar, FaStarHalfAlt } from 'react-icons/fa'; // Importing star icons
 
 const CourseCategorizer = ({ courses, level }) => {
   const [filteredCourses, setFilteredCourses] = useState([]);
+  const openCourseLink = (course) => {
+    if (course?.courseLink) {
+      window.open(course.courseLink, '_blank');
+    }
+  };
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -77,7 +82,7 @@ const CourseCategorizer = ({ courses, level }) => {
 
   const renderCourseCard = (course) => (
     <div className="col-md-3 mb-4" key={course.title}>
-      <div className="card text-center shadow-sm border-light" style={{ borderRadius: '10px', height: '500px', position: 'relative' }}>
+      <div className="card text-center shadow-sm border-light course-card" style={{ borderRadius: '10px', height: '500px', position: 'relative', cursor: 'pointer' }} onClick={() => openCourseLink(course)}>
         {course.label && (
           <span
             className="badge"
@@ -99,7 +104,7 @@ const CourseCategorizer = ({ courses, level }) => {
           }}
         />
         <div className="card-body">
-          <h5 className="card-title" style={{ cursor: 'pointer' }}>
+          <h5 className="card-title" style={{ cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); openCourseLink(course); }}>
             {course.title}
           </h5>
           <p className="card-text">
@@ -115,9 +120,11 @@ const CourseCategorizer = ({ courses, level }) => {
             </small>
           </p>
           <p className="card-text">
-            <strong>{course.price}</strong>
+            <strong style={{ cursor: 'pointer' }}>{course.price}</strong>
           </p>
-          <button className="btn btn-primary">Enroll Now</button>
+          <button className="btn btn-primary" onClick={(e) => e.stopPropagation()}>
+            Enroll Now
+          </button>
         </div>
       </div>
     </div>

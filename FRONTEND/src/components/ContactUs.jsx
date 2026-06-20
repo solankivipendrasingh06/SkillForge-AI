@@ -5,19 +5,19 @@ import Footer from './Footer';
 // Testimonial data could be fetched from an API instead of being hardcoded
 const testimonials = [
     {
-        name: "Rudra Mondal",
+        name: "Vipendra Singh Solanki",
         feedback: "The course recommendations have greatly improved my skills. The support team was very responsive!"
     },
     {
-        name: "Anshu Parihar",
+        name: "Tanish Tiwari",
         feedback: "A fantastic platform! I loved the personalized learning experience and the quick responses from the team."
     },
     {
-        name: "Swami Patil",
+        name: "Rayyan Khan",
         feedback: "Highly recommend! The courses are well-structured, and the team is very helpful."
     },
     {
-        name: "Swarup Patil",
+        name: "Swarnim Panwar",
         feedback: "Excellent service! I had a query, and they resolved it in no time. Keep up the great work!"
     }
 ];
@@ -189,10 +189,10 @@ const ContactUs = () => {
                             <strong>Email:</strong> <a href="mailto:support@example.com">support@example.com</a>
                         </p>
                         <p>
-                            <strong>Phone:</strong> <a href="tel:+1234567890">(123) 456-7890</a>
+                            <strong>Phone:</strong> <a href="tel:+1234567890">(+91) 8964955270</a>
                         </p>
                         <p>
-                            <strong>Address:</strong> 123 Main St, City, Country
+                            <strong>Address:</strong> Vijay Nagar , Indore
                         </p>
 
                         <h2>Follow Us</h2>

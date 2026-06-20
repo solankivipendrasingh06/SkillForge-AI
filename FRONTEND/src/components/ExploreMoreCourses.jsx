@@ -2,6 +2,11 @@ import React from 'react';
 import { FaStar, FaStarHalfAlt } from 'react-icons/fa'; // Importing the star icons
 
 const ExploreMoreCourses = ({ courses, onCourseSelect }) => {
+  const openCourseLink = (course) => {
+    if (course?.courseLink) {
+      window.open(course.courseLink, '_blank');
+    }
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -26,7 +31,7 @@ const ExploreMoreCourses = ({ courses, onCourseSelect }) => {
 
   const renderCourseCard = (course) => (
     <div className="col-md-3 mb-4" key={course.title}>
-      <div className="card text-center shadow-sm border-light" style={{ borderRadius: '10px', height: '500px', position: 'relative' }}>
+      <div className="card text-center shadow-sm border-light course-card" style={{ borderRadius: '10px', height: '500px', position: 'relative', cursor: 'pointer' }} onClick={() => openCourseLink(course)}>
         {course.label && (
           <span className="badge" style={{ position: 'absolute', top: '10px', right: '10px', backgroundColor: course.labelStyle?.backgroundColor }}>
             {course.label}
@@ -37,10 +42,10 @@ const ExploreMoreCourses = ({ courses, onCourseSelect }) => {
           alt={course.title}
           className="card-img-top"
           style={{ height: '200px', objectFit: 'cover', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', cursor: 'pointer' }}
-          onClick={() => onCourseSelect(course)} // Handle image click
+          onClick={(e) => { e.stopPropagation(); openCourseLink(course); }}
         />
         <div className="card-body">
-          <h5 className="card-title" onClick={() => onCourseSelect(course)} style={{ cursor: 'pointer' }}>
+          <h5 className="card-title" onClick={(e) => { e.stopPropagation(); openCourseLink(course); }} style={{ cursor: 'pointer' }}>
             {course.title}
           </h5>
           <p className="card-text"><strong>Instructor:</strong> {course.instructor}</p>
@@ -51,8 +56,12 @@ const ExploreMoreCourses = ({ courses, onCourseSelect }) => {
           <p className="card-text mt-2">
             <small>{course.enrollments} Enrollments | {course.duration}</small>
           </p>
-          <p className="card-text"><strong>{course.price}</strong></p>
-          <button className="btn btn-primary" onClick={() => onCourseSelect(course)}>Enroll Now</button>
+          <p className="card-text">
+            <strong style={{ cursor: 'pointer' }}>{course.price}</strong>
+          </p>
+          <button className="btn btn-primary" onClick={(e) => e.stopPropagation()}>
+            Enroll Now
+          </button>
         </div>
       </div>
     </div>

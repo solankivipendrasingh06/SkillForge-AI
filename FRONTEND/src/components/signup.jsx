@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { SkillsContext } from '../context/SkillsContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,8 @@ const Register = () => {
     mobile: '',
     password: '',
   });
+  const navigate = useNavigate();
+  const { login } = useContext(SkillsContext);
 
   const handleChange = (e) => {
     setFormData({
@@ -22,6 +26,14 @@ const Register = () => {
     try {
       const response = await axios.post('http://localhost:3001/api/register', formData);
       alert(response.data.msg);
+      // If registration is successful and user data is returned, log them in
+      if (response.data.user) {
+        login(response.data.user);
+        navigate('/');
+      } else {
+        // Otherwise redirect to login
+        navigate('/login');
+      }
     } catch (error) {
       console.error('Error during registration:', error); 
       alert(error.response?.data?.msg || 'An error occurred'); 

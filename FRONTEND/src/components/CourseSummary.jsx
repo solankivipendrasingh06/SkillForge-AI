@@ -22,12 +22,14 @@ const CourseSummary = ({ course, buttonLabel }) => {
       <div className="row g-4 align-items-start">
         {/* Course Image */}
         <div className="col-md-4">
-          <img 
-            src={course.imageUrl} 
-            alt={course.title} 
-            className="img-fluid rounded shadow-sm"
-            style={{ maxHeight: '300px', width: '100%', objectFit: 'cover' }}
-          />
+          <a href={course.videoUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
+            <img 
+              src={course.imageUrl} 
+              alt={course.title} 
+              className="img-fluid rounded shadow-sm"
+              style={{ maxHeight: '300px', width: '100%', objectFit: 'cover' }}
+            />
+          </a>
         </div>
 
         {/* Course Info */}

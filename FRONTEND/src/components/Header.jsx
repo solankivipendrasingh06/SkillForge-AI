@@ -1,8 +1,20 @@
 import "../App.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { SkillsContext } from "../context/SkillsContext";
 import SkillForgeImage from "../assets/SkillForge_5.jpg";
+import Chatbot from "./Chatbot";
 
 function Header() {
+  const { isAuthenticated, user, logout } = useContext(SkillsContext);
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <>
       <header className="p-3 text-bg-dark padding-header">
@@ -13,11 +25,11 @@ function Header() {
               className="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
             >
               <img
-                src={SkillForgeImage} // Replace with your image path
-                alt="Your Alt Text" // Add appropriate alt text for accessibility
-                width="140" // Set the desired width
-                height="50" // Set the desired height
-                className="me-2" // Keep any additional classes you need
+                src={SkillForgeImage}
+                alt="Your Alt Text"
+                width="140"
+                height="50"
+                className="me-2"
               />
             </a>
 
@@ -55,27 +67,56 @@ function Header() {
             <form
               className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
               role="search"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (searchTerm.trim()) {
+                  navigate(`/courses?q=${encodeURIComponent(searchTerm.trim())}`);
+                } else {
+                  navigate('/courses');
+                }
+              }}
             >
               <input
                 type="search"
                 className="form-control form-control-dark text-black"
                 placeholder="Search..."
                 aria-label="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </form>
 
-            <div className="text-end">
-              <Link to="/login">
-                <button type="button" className="btn btn-outline-light me-2">
-                  Login
-                </button>
-              </Link>
+            <Chatbot />
 
-              <Link to="/signup">
-                <button type="button" className="btn btn-warning">
-                  Sign-up
-                </button>
-              </Link>
+            <div className="text-end">
+              {isAuthenticated ? (
+                <>
+                  <span className="text-white me-3">
+                    Welcome, {user?.name || user?.email}!
+                  </span>
+                  <button
+                    type="button"
+                    className="btn btn-warning"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <button type="button" className="btn btn-outline-light me-2">
+                      Login
+                    </button>
+                  </Link>
+
+                  <Link to="/signup">
+                    <button type="button" className="btn btn-warning">
+                      Sign-up
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

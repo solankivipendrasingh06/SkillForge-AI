@@ -13,7 +13,7 @@ const PopularCourses = () => {
       rating: 4.5,
       enrollments: '1200',
       duration: '6 hours',
-      price: '$49',
+      price: "₹Free",
       imageUrl: reactForBeginnersImg, // Replace with actual image URLs
       label: 'Best Seller', // Updated label for the course
       labelStyle: { backgroundColor: 'green' } // Added style for Best Seller label
@@ -25,7 +25,7 @@ const PopularCourses = () => {
       rating: 4.8,
       enrollments: '1500',
       duration: '8 hours',
-      price: '$59',
+      price: "₹Free",
       imageUrl: PythonDataScience, // Replace with actual image URLs
       label: 'New Release', // Updated label for the course
       labelStyle: { backgroundColor: 'red' } // Added style for New Release label
@@ -37,7 +37,7 @@ const PopularCourses = () => {
       rating: 4.7,
       enrollments: '900',
       duration: '7 hours',
-      price: '$39',
+      price: "₹Free",
       imageUrl: JavascriptAdvanced, // Replace with actual image URLs
     },
     {
@@ -47,7 +47,7 @@ const PopularCourses = () => {
       rating: 4.5,
       enrollments: '1800',
       duration: '10 hours',
-      price: '$99',
+      price: "₹Free",
       imageUrl: MachineLearing, // Replace with actual image URLs
     },
   ];

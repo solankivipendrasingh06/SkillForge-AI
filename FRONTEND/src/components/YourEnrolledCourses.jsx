@@ -2,6 +2,11 @@ import React from 'react';
 import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 
 const YourEnrolledCourses = ({ courses, onCourseSelect }) => { // Accepting onCourseSelect as a prop
+  const openCourseLink = (course) => {
+    if (course?.courseLink) {
+      window.open(course.courseLink, '_blank');
+    }
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -36,7 +41,7 @@ const YourEnrolledCourses = ({ courses, onCourseSelect }) => { // Accepting onCo
       <div className="row mb-5 justify-content-center">
         {courses.EnrolledCourse.slice(0, 3).map((course, index) => (
           <div className="col-md-3 mb-4" key={index}>
-            <div className="card text-center shadow-sm border-light" style={{ borderRadius: '10px', height: '500px', width: '100%', position: 'relative' }}>
+            <div className="card text-center shadow-sm border-light course-card" style={{ borderRadius: '10px', height: '500px', width: '100%', position: 'relative', cursor: 'pointer' }} onClick={() => openCourseLink(course)}>
               {course.label && (
                 <span className="badge" style={{ position: 'absolute', top: '10px', right: '10px', backgroundColor: course.labelStyle?.backgroundColor }}>
                   {course.label}
@@ -46,12 +51,12 @@ const YourEnrolledCourses = ({ courses, onCourseSelect }) => { // Accepting onCo
                 src={course.imageUrl}
                 alt={course.title}
                 className="card-img-top"
-                style={{ height: '200px', objectFit: 'cover', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', cursor: 'pointer' }} // Add cursor pointer
-                onClick={() => handleCourseClick(course)} // Pass the full course object
+                style={{ height: '200px', objectFit: 'cover', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', cursor: 'pointer' }}
+                onClick={(e) => { e.stopPropagation(); openCourseLink(course); }}
               />
               <div className="card-body">
                 {/* Add onClick handler to the title */}
-                <h5 className="card-title" onClick={() => handleCourseClick(course)} style={{ cursor: 'pointer' }}>
+                <h5 className="card-title" onClick={(e) => { e.stopPropagation(); openCourseLink(course); }} style={{ cursor: 'pointer' }}>
                   {course.title}
                 </h5>
                 <p className="card-text">
@@ -65,7 +70,7 @@ const YourEnrolledCourses = ({ courses, onCourseSelect }) => { // Accepting onCo
                   <small>{course.enrollments} Enrollments | {course.duration}</small>
                 </p>
                 <p className="card-text">
-                  <strong>{course.price}</strong>
+                  <strong style={{ cursor: 'pointer' }}>{course.price}</strong>
                 </p>
                 <div className="mt-3">
                   <div className="progress" style={{ height: '15px' }}>
@@ -81,7 +86,9 @@ const YourEnrolledCourses = ({ courses, onCourseSelect }) => { // Accepting onCo
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-success mt-3">Continue Learning</button>
+                <button className="btn btn-success mt-3" onClick={(e) => e.stopPropagation()}>
+                  Continue Learning
+                </button>
               </div>
             </div>
           </div>

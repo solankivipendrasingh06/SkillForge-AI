@@ -1,18 +1,28 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { SkillsContext } from "../context/SkillsContext"; 
 import axios from "axios";
 
 const MyProfile = () => {
-  const { interestedSkills, setInterestedSkills } = useContext(SkillsContext); // Use the context
+  const { interestedSkills, setInterestedSkills, profileData, updateProfile } = useContext(SkillsContext); 
   const [profilePic, setProfilePic] = useState(null);
-  const [name, setName] = useState("Swami Patil");
-  const [email, setEmail] = useState("swami@gmail.com");
-  const [location, setLocation] = useState("Pune, Maharashtra");
-  const [skills, setSkills] = useState(["JavaScript", "React"]);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [location, setLocation] = useState("");
+  const [skills, setSkills] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");  // New state for success message
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Load profile data from context on component mount
+  useEffect(() => {
+    if (profileData) {
+      setName(profileData.name || "");
+      setEmail(profileData.email || "");
+      setLocation(profileData.location || "");
+      setSkills(profileData.skills || []);
+    }
+  }, [profileData]);
 
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];
@@ -33,17 +43,23 @@ const MyProfile = () => {
     axios.post("http://localhost:3001/api/profile", userDetails)
       .then(response => {
         console.log("User details saved successfully:", response.data);
-        setSuccessMessage("Profile saved successfully!");  // Set success message
+        // Update profile in context
+        updateProfile({
+          name,
+          email,
+          location,
+          skills,
+        });
+        setSuccessMessage("Profile saved successfully!");
+        setTimeout(() => setSuccessMessage(""), 3000); // Clear message after 3 seconds
       })
       .catch(error => {
         console.error("Error saving user details:", error);
-        setSuccessMessage("Error saving profile. Please try again.");  // Handle error message
+        setSuccessMessage("Error saving profile. Please try again.");
+        setTimeout(() => setSuccessMessage(""), 3000);
       });
     
-    // Only update the interested skills in context, no navigation
-    setInterestedSkills(interestedSkills);
-
-    setIsEditing(false); // Exit editing mode
+    setIsEditing(false);
   };
 
   return (
@@ -143,7 +159,7 @@ const MyProfile = () => {
                 value={interestedSkills.join(", ")}
                 onChange={(e) => {
                   const newSkills = e.target.value.split(",").map((skill) => skill.trim());
-                  setInterestedSkills(newSkills); // Update the context
+                  setInterestedSkills(newSkills);
                 }}
                 style={styles.input}
               />

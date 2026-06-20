@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { SkillsContext } from '../context/SkillsContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ const Login = () => {
     password: '',
   });
   const navigate = useNavigate();
+  const { login } = useContext(SkillsContext);
 
   const handleChange = (e) => {
     setFormData({
@@ -23,7 +25,7 @@ const Login = () => {
       const response = await axios.post('http://localhost:3001/api/login', formData);
       if (response.data.user) {
         alert('Login successful!');
-        localStorage.setItem('user', JSON.stringify(response.data.user)); 
+        login(response.data.user); // Update context
         navigate('/');
       } else {
         alert('Unexpected response format.');
