@@ -1,13 +1,26 @@
 import "../App.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 import { SkillsContext } from "../context/SkillsContext";
 import SkillForgeImage from "../assets/SkillForge_5.jpg";
 import Chatbot from "./Chatbot";
+import { 
+  FaHome, 
+  FaBookOpen, 
+  FaClipboardCheck, 
+  FaUserGraduate, 
+  FaEnvelope, 
+  FaSearch, 
+  FaSignOutAlt, 
+  FaSignInAlt, 
+  FaUserPlus,
+  FaMapMarkedAlt
+} from "react-icons/fa";
 
 function Header() {
   const { isAuthenticated, user, logout } = useContext(SkillsContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleLogout = () => {
@@ -15,58 +28,90 @@ function Header() {
     navigate('/');
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <>
-      <header className="p-3 text-bg-dark padding-header">
-        <div className=" width">
-          <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a
-              href="/"
-              className="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
+    <header className="navbar-sticky bg-dark-gradient border-bottom border-dark border-opacity-25 shadow-sm sticky-top">
+      <div className="container-fluid px-4 py-2">
+        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          
+          {/* Brand Logo */}
+          <Link to="/" className="d-flex align-items-center text-white text-decoration-none me-3">
+            <img
+              src={SkillForgeImage}
+              alt="SkillForge Logo"
+              height="45"
+              className="rounded-3 shadow-sm me-2 bg-white p-1"
+            />
+            <span className="fw-extrabold fs-4 tracking-tight bg-gradient-brand text-transparent bg-clip-text">
+              SkillForge
+            </span>
+          </Link>
+
+          {/* Navigation Links */}
+          <nav className="nav me-auto mb-2 mb-md-0 d-none d-md-flex align-items-center gap-1">
+            <Link 
+              to="/" 
+              className={`nav-link px-3 py-2 rounded-pill transition-all fw-semibold ${
+                isActive('/') || isActive('/home') ? 'bg-primary text-white shadow-sm' : 'text-light opacity-85 hover-opacity-100'
+              }`}
             >
-              <img
-                src={SkillForgeImage}
-                alt="Your Alt Text"
-                width="140"
-                height="50"
-                className="me-2"
-              />
-            </a>
+              <FaHome className="me-1 mb-1" /> Home
+            </Link>
 
-            <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-              <li>
-                <Link to="/" className="nav-link px-4 text-white">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/courses" className="nav-link px-3 text-white">
-                  Courses
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/skill-assessment"
-                  className="nav-link px-3 text-white"
-                >
-                  Skill Assessment
-                </Link>
-              </li>
-              <li>
-                <Link to="/my-profile" className="nav-link px-3 text-white">
-                  My Profile
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="nav-link px-3 text-white">
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
+            <Link 
+              to="/courses" 
+              className={`nav-link px-3 py-2 rounded-pill transition-all fw-semibold ${
+                isActive('/courses') ? 'bg-primary text-white shadow-sm' : 'text-light opacity-85 hover-opacity-100'
+              }`}
+            >
+              <FaBookOpen className="me-1 mb-1" /> Explore Courses
+            </Link>
 
+            <Link 
+              to="/skill-assessment" 
+              className={`nav-link px-3 py-2 rounded-pill transition-all fw-semibold ${
+                isActive('/skill-assessment') ? 'bg-warning text-dark shadow-sm fw-bold' : 'text-light opacity-85 hover-opacity-100'
+              }`}
+            >
+              <FaClipboardCheck className="me-1 mb-1 text-warning" /> Skill Assessment
+            </Link>
+
+            <Link 
+              to="/course-summary" 
+              className={`nav-link px-3 py-2 rounded-pill transition-all fw-semibold ${
+                isActive('/course-summary') ? 'bg-primary text-white shadow-sm' : 'text-light opacity-85 hover-opacity-100'
+              }`}
+            >
+              <FaMapMarkedAlt className="me-1 mb-1" /> Roadmap
+            </Link>
+
+            <Link 
+              to="/my-profile" 
+              className={`nav-link px-3 py-2 rounded-pill transition-all fw-semibold ${
+                isActive('/my-profile') ? 'bg-primary text-white shadow-sm' : 'text-light opacity-85 hover-opacity-100'
+              }`}
+            >
+              <FaUserGraduate className="me-1 mb-1" /> Dashboard
+            </Link>
+
+            <Link 
+              to="/contact" 
+              className={`nav-link px-3 py-2 rounded-pill transition-all fw-semibold ${
+                isActive('/contact') ? 'bg-primary text-white shadow-sm' : 'text-light opacity-85 hover-opacity-100'
+              }`}
+            >
+              <FaEnvelope className="me-1 mb-1" /> Contact
+            </Link>
+          </nav>
+
+          {/* Right Action Bar: Search, Chatbot, User Account */}
+          <div className="d-flex align-items-center gap-3">
+            
+            {/* Search Input */}
             <form
-              className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
-              role="search"
+              className="position-relative d-none d-lg-block"
+              style={{ width: '220px' }}
               onSubmit={(e) => {
                 e.preventDefault();
                 if (searchTerm.trim()) {
@@ -78,50 +123,49 @@ function Header() {
             >
               <input
                 type="search"
-                className="form-control form-control-dark text-black"
-                placeholder="Search..."
-                aria-label="Search"
+                className="form-control form-control-sm rounded-pill bg-dark text-white border-secondary ps-4 pe-3 py-2"
+                placeholder="Search courses..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              <FaSearch className="position-absolute start-0 top-50 translate-middle-y ms-2 text-muted small" />
             </form>
 
+            {/* AI Assistant Chatbot Widget */}
             <Chatbot />
 
+            {/* Authentication Buttons / Profile */}
             <div className="text-end">
               {isAuthenticated ? (
-                <>
-                  <span className="text-white me-3">
-                    Welcome, {user?.name || user?.email}!
+                <div className="d-flex align-items-center gap-2">
+                  <span className="text-white small fw-bold d-none d-sm-inline">
+                    {user?.name || user?.email || 'Learner'}
                   </span>
                   <button
                     type="button"
-                    className="btn btn-warning"
+                    className="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold"
                     onClick={handleLogout}
                   >
-                    Logout
+                    <FaSignOutAlt className="me-1" /> Logout
                   </button>
-                </>
+                </div>
               ) : (
-                <>
-                  <Link to="/login">
-                    <button type="button" className="btn btn-outline-light me-2">
-                      Login
-                    </button>
+                <div className="d-flex align-items-center gap-2">
+                  <Link to="/login" className="btn btn-sm btn-outline-light rounded-pill px-3 fw-semibold">
+                    <FaSignInAlt className="me-1" /> Login
                   </Link>
-
-                  <Link to="/signup">
-                    <button type="button" className="btn btn-warning">
-                      Sign-up
-                    </button>
+                  <Link to="/signup" className="btn btn-sm btn-warning rounded-pill px-3 fw-bold shadow-sm">
+                    <FaUserPlus className="me-1" /> Sign Up
                   </Link>
-                </>
+                </div>
               )}
             </div>
+
           </div>
+
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-// Create a context for skills
+// Create a context for skills and learning platform state
 export const SkillsContext = createContext();
 
 export const SkillsProvider = ({ children }) => {
@@ -9,16 +9,32 @@ export const SkillsProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profileData, setProfileData] = useState({
-    name: '',
-    email: '',
-    location: '',
-    skills: []
+    name: 'Learner',
+    email: 'student@skillforge.io',
+    location: 'Remote',
+    skills: ['JavaScript', 'Problem Solving']
   });
 
-  // Load user from localStorage on component mount
+  // Assessment results state
+  const [assessmentResults, setAssessmentResults] = useState(null);
+
+  // Completed topics across learning roadmaps: key is `${courseId}_${topicId}` -> boolean
+  const [completedTopics, setCompletedTopics] = useState({});
+
+  // Enrolled courses state
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+
+  // Active course selected for roadmap viewing
+  const [activeCourseId, setActiveCourseId] = useState('web-dev-fullstack');
+
+  // Load state from localStorage on component mount
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     const storedProfile = localStorage.getItem('userProfile');
+    const storedAssessment = localStorage.getItem('assessmentResults');
+    const storedCompletedTopics = localStorage.getItem('completedTopics');
+    const storedEnrolled = localStorage.getItem('enrolledCourses');
+    const storedActiveCourse = localStorage.getItem('activeCourseId');
     
     if (storedUser) {
       try {
@@ -26,37 +42,101 @@ export const SkillsProvider = ({ children }) => {
         setUser(parsedUser);
         setIsAuthenticated(true);
         
-        // Load profile if available
         if (storedProfile) {
-          const parsedProfile = JSON.parse(storedProfile);
-          setProfileData(parsedProfile);
+          setProfileData(JSON.parse(storedProfile));
         } else if (parsedUser) {
-          // Initialize profile from user data
           setProfileData({
-            name: parsedUser.name || '',
-            email: parsedUser.email || '',
-            location: parsedUser.location || '',
-            skills: parsedUser.skills || []
+            name: parsedUser.name || 'Learner',
+            email: parsedUser.email || 'student@skillforge.io',
+            location: parsedUser.location || 'Remote',
+            skills: parsedUser.skills || ['JavaScript']
           });
         }
       } catch (error) {
         console.error('Error parsing user from localStorage:', error);
-        localStorage.removeItem('user');
-        localStorage.removeItem('userProfile');
       }
     }
+
+    if (storedAssessment) {
+      try {
+        setAssessmentResults(JSON.parse(storedAssessment));
+      } catch (e) {
+        console.error('Error loading assessment results:', e);
+      }
+    }
+
+    if (storedCompletedTopics) {
+      try {
+        setCompletedTopics(JSON.parse(storedCompletedTopics));
+      } catch (e) {
+        console.error('Error loading completed topics:', e);
+      }
+    }
+
+    if (storedEnrolled) {
+      try {
+        setEnrolledCourses(JSON.parse(storedEnrolled));
+      } catch (e) {
+        console.error('Error loading enrolled courses:', e);
+      }
+    }
+
+    if (storedActiveCourse) {
+      setActiveCourseId(storedActiveCourse);
+    }
   }, []);
+
+  const saveAssessmentResult = (results) => {
+    setAssessmentResults(results);
+    localStorage.setItem('assessmentResults', JSON.stringify(results));
+
+    if (results.recommendedCourseId) {
+      setActiveCourseId(results.recommendedCourseId);
+      localStorage.setItem('activeCourseId', results.recommendedCourseId);
+    }
+
+    if (results.interestedSkills && results.interestedSkills.length > 0) {
+      setInterestedSkills(results.interestedSkills);
+    }
+  };
+
+  const toggleTopicCompletion = (courseId, topicId) => {
+    const key = `${courseId}_${topicId}`;
+    const updated = {
+      ...completedTopics,
+      [key]: !completedTopics[key]
+    };
+    setCompletedTopics(updated);
+    localStorage.setItem('completedTopics', JSON.stringify(updated));
+  };
+
+  const isTopicCompleted = (courseId, topicId) => {
+    return !!completedTopics[`${courseId}_${topicId}`];
+  };
+
+  const enrollInCourse = (course) => {
+    const exists = enrolledCourses.some(c => c.id === course.id);
+    if (!exists) {
+      const updated = [...enrolledCourses, course];
+      setEnrolledCourses(updated);
+      localStorage.setItem('enrolledCourses', JSON.stringify(updated));
+    }
+    setActiveCourseId(course.id);
+    localStorage.setItem('activeCourseId', course.id);
+  };
 
   const login = (userData) => {
     setUser(userData);
     setIsAuthenticated(true);
-    setProfileData({
-      name: userData.name || '',
+    const newProf = {
+      name: userData.name || 'Learner',
       email: userData.email || '',
       location: userData.location || '',
       skills: userData.skills || []
-    });
+    };
+    setProfileData(newProf);
     localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('userProfile', JSON.stringify(newProf));
   };
 
   const updateProfile = (newProfileData) => {
@@ -67,14 +147,7 @@ export const SkillsProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    setProfileData({
-      name: '',
-      email: '',
-      location: '',
-      skills: []
-    });
     localStorage.removeItem('user');
-    localStorage.removeItem('userProfile');
   };
 
   return (
@@ -92,10 +165,20 @@ export const SkillsProvider = ({ children }) => {
         logout,
         profileData,
         setProfileData,
-        updateProfile
+        updateProfile,
+        assessmentResults,
+        saveAssessmentResult,
+        completedTopics,
+        toggleTopicCompletion,
+        isTopicCompleted,
+        enrolledCourses,
+        enrollInCourse,
+        activeCourseId,
+        setActiveCourseId
       }}
     >
       {children}
     </SkillsContext.Provider>
   );
 };
+
